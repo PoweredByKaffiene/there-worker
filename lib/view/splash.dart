@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:there_worker/controller/auth_controller.dart';
+import 'package:there_worker/controller/wallet_controller.dart';
 
 import 'dart:async';
 
@@ -17,19 +19,26 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
 
+  AuthenticationController _authController = Get.find<AuthenticationController>();
+  WalletController _walletController = Get.find<WalletController>();
+
   void navigateAfter() async {
-    // await _authController.updateAuthState();
+    await _authController.updateAuthState();
 
-    // switch (_authController.state) {
-    //   case AuthState.loggedIn:
-    //     Get.offAllNamed('/home');
-    //     break;
-    //   case AuthState.loggedOut:
-    //     Get.offAllNamed('/login');
-    //     break;
-    // }
+    switch (_authController.state) {
+      case AuthState.loggedIn:
 
-    Get.offAllNamed('/login');
+        if (_walletController.isConnected()) {
+          Get.offAllNamed('/home');
+        } else {
+          Get.offAllNamed('/connect');
+        }
+
+        break;
+      case AuthState.loggedOut:
+        Get.offAllNamed('/login');
+        break;
+    }
   }
 
   startTimer() async {

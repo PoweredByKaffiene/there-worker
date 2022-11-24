@@ -5,6 +5,8 @@ import 'package:chopper/chopper.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 
+import '../model/login_result.dart';
+
 class JsonToTypeConverter extends JsonConverter {
 
   final Map<Type, Function> typeToJsonFactoryMap;
@@ -14,8 +16,6 @@ class JsonToTypeConverter extends JsonConverter {
   @override
   Response<BodyType> convertResponse<BodyType, InnerType>(Response response) {
     String body = utf8.decode(response.bodyBytes); // https://github.com/dart-lang/http/issues/175;
-
-    print("body: $body");
 
     return response.copyWith(
       body: fromJsonData<BodyType, InnerType>(body, typeToJsonFactoryMap[InnerType]!),
@@ -65,11 +65,9 @@ class AuthInterceptor with RequestInterceptor, ResponseInterceptor {
 
   @override
   FutureOr<Response> onResponse(Response response) async {
-    print(response.bodyString);
-
-    // if (response.body is LoginResult) {
-    //   await _secureStorage.write(key: 'access_token', value: response.body.tokens.access);
-    // }
+    if (response.body is LoginResult) {
+      await _secureStorage.write(key: 'access_token', value: response.body.tokens.access);
+    }
 
     return response;
   }

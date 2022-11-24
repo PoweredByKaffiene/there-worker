@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:logging/logging.dart';
+import 'package:there_worker/view/login.dart';
 
 import 'bindings/initial_binding.dart';
 import 'styles.dart';
-import 'view/login.dart';
+import 'view/connect.dart';
+import 'view/home.dart';
 import 'view/splash.dart';
 
 void _setupLogging() {
@@ -39,7 +41,8 @@ class MyApp extends StatelessWidget {
           getPages: [
             GetPage(name: '/splash', page: () => const SplashScreen()),
             GetPage(name: '/login', page: () => LoginScreen()),
-            // GetPage(name: '/home', page: () => HomeScreen(), binding: HomeBinding()),
+            GetPage(name: '/connect', page: () => ConnectScreen()),
+            GetPage(name: '/home', page: () => HomeScreen()),
           ],
         );
       },

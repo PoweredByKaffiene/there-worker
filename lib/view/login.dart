@@ -1,122 +1,103 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:sizer/sizer.dart';
 
-import '../gen/assets.gen.dart';
+import '../controller/auth_controller.dart';
 import '../widgets/layout/root.dart';
 
+
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+  LoginScreen({super.key});
+
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  AuthenticationController _authController = Get.find<AuthenticationController>();
+
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-    var colorScheme = Theme.of(context).colorScheme;
+    var theme = Theme.of(context);
+    var colorScheme = theme.colorScheme;
+    
+    String? email;
+    String? password;
+
+    void attemptLogin() {
+      _authController.login(email, password).then((wasSuccessful) {
+        if (wasSuccessful) {
+          Get.offAllNamed('/connect');
+        }
+      });
+    }
+
+    void onSubmit () {
+      if (_formKey.currentState!.validate() != true) {
+        return;
+      }
+
+      _formKey.currentState!.save();
+
+      attemptLogin();
+    }
 
     return Root(
-        appbar: AppBar(
-          title: const Text(
-            'Authenticate',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 24,
-            ),
-          ),
-          centerTitle: true,
-          automaticallyImplyLeading: false,
-          // toolbarHeight: size.height * 0.1,
-        ),
+      child: Container(
+        padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
+            SizedBox(height: 2.h),
+            Text("Login", style: theme.textTheme.headline1?.copyWith(color: theme.primaryColor, fontWeight: FontWeight.bold), textAlign: TextAlign.start),
+            SizedBox(height: 1.h),
+            Text("Login to start sharing your location", style: theme.textTheme.subtitle1, textAlign: TextAlign.start),
+            const Divider(),
+            SizedBox(height: 6.h),
+            Form(
+              key: _formKey,
               child: Column(
                 children: [
-                  Transform.rotate(
-                    angle: -0.4,
-                    child: Assets.img.wallet.image(
-                      scale: 3.8,
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: "Email",
+                      hintText: "Enter your email",
+                      border: OutlineInputBorder(),
                     ),
+                    validator: (value) => GetUtils.isEmail(value!) ? null : "Enter valid email",
+                    onSaved: (newValue) => email = newValue,
                   ),
-                  SizedBox(height: size.height * 0.09),
-                  Text(
-                    'Connect with wallet',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w900,
-                      color: colorScheme.primary
+                  SizedBox(height: 1.h),
+                  TextFormField(
+                    obscureText: true,
+                    decoration: const InputDecoration(
+                      labelText: "Password",
+                      hintText: "Enter your password",
+                      border: OutlineInputBorder(),
                     ),
+                    validator: (value) => value!.length < 6 ? "Password must be at least 6 characters" : null,
+                    onSaved: (newValue) => password = newValue,
                   ),
-                  SizedBox(height: size.height * 0.01),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 28),
-                    child: Text(
-                      'Your crypto wallet unlocks the world of web3. Connect to our wallet provider or create a new one.',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xFF8E8E8E),
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  SizedBox(height: size.height * 0.02),
-                  GestureDetector(
-                    onTap: () {
-                      HapticFeedback.mediumImpact();
-
-                      Get.toNamed('/main');
-                    },
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: const Color(0xFFE5E5E5),
-                          width: 3,
+                  SizedBox(height: 2.h),
+                  SizedBox(
+                    width: 70.w,
+                    height: 6.h,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: theme.primaryColor,
+                        foregroundColor: colorScheme.onPrimary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(14.0),
-                        child: CircleAvatar(
-                          radius: size.width * 0.15,
-                          backgroundColor: colorScheme.background,
-                          child: Assets.img.metamask.image(),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: size.height * 0.01),
-                  Text(
-                    'MetaMask',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w900,
-                      color: colorScheme.primary
+                      onPressed: onSubmit,
+                      child: const Text("Login"),
                     ),
                   ),
                 ],
-              ),
+              )
             ),
-            Column(
-              children: [
-                const Text("New to wallets?",
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
-                GestureDetector(
-                  onTap: () {
-                    launchUrl(Uri.parse('https://metamask.io/'));
-                  },
-                  child: Text("Learn more",
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: colorScheme.primary,
-                          fontWeight: FontWeight.w600)),
-                ),
-                SizedBox(height: size.height * 0.01),
-              ],
-            )
+            SizedBox(height: 2.h),
           ],
-        ));
+        ),
+      ),
+    );
   }
 }
