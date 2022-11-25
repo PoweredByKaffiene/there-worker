@@ -6,6 +6,7 @@ import 'package:logging/logging.dart';
 import 'package:there_worker/view/login.dart';
 import 'package:there_worker/view/trip/end.dart';
 import 'package:there_worker/view/trip/start.dart';
+import 'package:there_worker/view/trip/verify.dart';
 
 import 'bindings/initial_binding.dart';
 import 'styles.dart';
@@ -47,6 +48,7 @@ class MyApp extends StatelessWidget {
             GetPage(name: '/home', page: () => HomeScreen()),
             GetPage(name: '/start', page: () => StartScreen()),
             GetPage(name: '/end', page: () => EndScreen()),
+            GetPage(name: '/verify', page: () => VerifyScreen()),
           ],
         );
       },
