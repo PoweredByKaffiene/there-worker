@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:there_worker/controller/wallet_controller.dart';
 
 import '../controller/auth_controller.dart';
 import '../widgets/layout/root.dart';
@@ -11,6 +12,7 @@ class LoginScreen extends StatelessWidget {
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   AuthenticationController _authController = Get.find<AuthenticationController>();
+  WalletController _walletController = Get.find<WalletController>();
 
 
   @override
@@ -24,7 +26,11 @@ class LoginScreen extends StatelessWidget {
     void attemptLogin() {
       _authController.login(email, password).then((wasSuccessful) {
         if (wasSuccessful) {
-          Get.offAllNamed('/connect');
+          if (_walletController.isConnected()) {
+            Get.offAllNamed('/home');
+          } else {
+            Get.offAllNamed('/connect');
+          }
         }
       });
     }

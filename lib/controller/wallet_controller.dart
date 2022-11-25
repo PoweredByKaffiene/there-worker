@@ -51,5 +51,9 @@ class WalletController extends GetxController {
     );
   }
 
+  void killSession() async {
+    await connector?.killSession(sessionError: "Killed by user");
+  }
+
   bool isConnected() => session?.connected ?? false;
 }

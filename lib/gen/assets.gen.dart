@@ -18,11 +18,19 @@ class $AssetsImgGen {
   /// File path: assets/img/metamask.png
   AssetGenImage get metamask => const AssetGenImage('assets/img/metamask.png');
 
+  /// File path: assets/img/trip_end.jpg
+  AssetGenImage get tripEnd => const AssetGenImage('assets/img/trip_end.jpg');
+
+  /// File path: assets/img/trip_start.webp
+  AssetGenImage get tripStart =>
+      const AssetGenImage('assets/img/trip_start.webp');
+
   /// File path: assets/img/wallet.png
   AssetGenImage get wallet => const AssetGenImage('assets/img/wallet.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [logo, metamask, wallet];
+  List<AssetGenImage> get values =>
+      [logo, metamask, tripEnd, tripStart, wallet];
 }
 
 class Assets {
